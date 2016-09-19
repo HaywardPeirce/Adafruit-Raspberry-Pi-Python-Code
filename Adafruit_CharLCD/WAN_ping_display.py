@@ -1,9 +1,13 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 from Adafruit_CharLCD import Adafruit_CharLCD
 from subprocess import *
 from time import sleep, strftime
 from datetime import datetime
+
+# Import library and create instance of REST client.
+from Adafruit_IO import Client
+aio = Client('')
 
 lcd = Adafruit_CharLCD()
 
@@ -56,19 +60,12 @@ while 1:
         lcd.message('Ping %0.2f' % (pingnum))
         lcd.setCursor(0, 2)
         lcd.message('%0.2f %0.2f %0.2f' % (pingavg, pingmin, pingmax))
-    
-
-
-#    lcd.message('This is the 1st line\n')
-#    lcd.message('This is the 2nd line\n')
-#    lcd.message('This is the 3rd line\n')
-#    lcd.message('This is the 4nd line\n')
-#    lcd.message('11111111111111111111222222222222222222223333333333333333333344444444444444444444')
-#    lcd.setCursor(0, 0)
-#    lcd.message('3333333333333333333344444444444444444444')
-#    lcd.setCursor(0, 3)
-#    lcd.message('Line 4')
-
-
-
+        
+        aio.send('wan-ip', wanipaddr)
+        aio.send('ping', pingnum)
+        data0 = aio.receive('wan-ip')
+        print('Received value: {0}'.format(data0.value))
+        data1 = aio.receive('ping')
+        print('Received value: {0}'.format(data1.value))
+        
         sleep(2)
